@@ -17,7 +17,7 @@ from app.repositories.metrics_repositories import MetricsRepository
 from app.schemas.metric.activity.miles import ActivityMilesBulkCreate
 from app.schemas.metric.activity.steps import ActivityStepsBulkCreate
 from app.schemas.metric.activity.workouts import ActivityWorkoutsBulkCreate
-from app.schemas.metric.body.composition import BodyCompositionBulkCreate
+from app.schemas.metric.body.composition import BodyCompositionBulkCreate, BodyCompositionCreate
 from app.schemas.metric.body.heartrate import HeartRateBulkCreate
 from app.schemas.metric.calories.active import CaloriesActiveBulkCreate
 from app.schemas.metric.calories.baseline import CaloriesBaselineBulkCreate
@@ -35,6 +35,27 @@ class MetricsService:
         """Get body composition data with optional date filtering"""
         metrics_repository = MetricsRepository(self.db)
         return metrics_repository.get_body_composition_data(user_id, start_date, end_date)
+
+    def create_body_composition_record(self, user_id: str, composition_data: BodyCompositionCreate) -> BodyComposition:
+        """Create a single body composition record"""
+        metrics_repository = MetricsRepository(self.db)
+        data_source = composition_data.source or DataSource.MANUAL
+        new_record = BodyComposition(
+            id=generate_rid("metric", "body_composition"),
+            user_id=user_id,
+            date_hour=composition_data.measurement_date,
+            weight=composition_data.weight,
+            body_fat_percentage=composition_data.body_fat_percentage,
+            muscle_mass_percentage=composition_data.muscle_mass_percentage,
+            bone_density=composition_data.bone_density,
+            water_percentage=composition_data.water_percentage,
+            visceral_fat=composition_data.visceral_fat,
+            bmr=composition_data.bmr,
+            measurement_method=composition_data.measurement_method,
+            notes=composition_data.notes,
+            source=data_source,
+        )
+        return metrics_repository.create_body_composition_record(new_record)
 
     def create_or_update_multiple_body_composition_records(self, bulk_data: BodyCompositionBulkCreate, user_id: str) -> tuple:
         """Create or update multiple body composition records (bulk upsert)"""

@@ -5,6 +5,7 @@ from .chat.message import ChatMessage
 from .enums import DataSource
 from .goal.general import GoalGeneral
 from .goal.macros import GoalMacros
+from .goal.user_goals import UserGoal
 from .goal.templates import GoalTemplate
 from .metric.activity.miles import ActivityMiles
 from .metric.activity.steps import ActivitySteps
@@ -17,6 +18,7 @@ from .metric.sleep.daily import SleepDaily
 from .nutrition.macros import NutritionMacros
 from .nutrition.foods import Food
 from .nutrition.consumption_logs import ConsumptionLog
+from .profile.user_profile import UserProfile
 
 __all__ = [
     "AuthUser",
@@ -25,6 +27,7 @@ __all__ = [
     "DataSource",
     "GoalGeneral",
     "GoalMacros",
+    "UserGoal",
     "GoalTemplate",
     "BodyComposition",
     "BodyHeartRate",
@@ -37,4 +40,5 @@ __all__ = [
     "NutritionMacros",
     "Food",
     "ConsumptionLog",
+    "UserProfile",
 ]

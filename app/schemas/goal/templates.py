@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
+"""Nested model schemas"""
 
 class GoalTemplateTarget(BaseModel):
     """Sub-structure for the default target stored inside defaults."""
@@ -41,6 +42,8 @@ class GoalTemplateSafety(BaseModel):
         extra = "allow"
 
 
+"""Base model schemas"""
+
 class GoalTemplateDefaults(BaseModel):
     """Structured payload stored in GoalTemplateBase.defaults."""
     type: str = Field(..., description="Template type (cut, bulk, recomp, etc.)")
@@ -75,6 +78,9 @@ class GoalTemplateDefaults(BaseModel):
     default_variants_basis: str = Field(
         ..., description="Default variant basis for preset generation"
     )
+    workout_delta_kcal: float = Field(
+        ..., description="Additional kcal applied to workout preset versus rest"
+    )
     safety: GoalTemplateSafety = Field(
         default_factory=GoalTemplateSafety,
         description="Safety constraints for deficit/surplus, BMI, calories, etc.",
@@ -83,6 +89,8 @@ class GoalTemplateDefaults(BaseModel):
     class Config:
         extra = "allow"
 
+
+"""Core schema"""
 
 class GoalTemplateBase(BaseModel):
     """Full template row plus typed defaults payload."""
@@ -93,6 +101,8 @@ class GoalTemplateBase(BaseModel):
     defaults: GoalTemplateDefaults
     active: bool = True
 
+
+"""API Response schemas"""
 
 class GoalTemplateRead(GoalTemplateBase):
     created_at: datetime
