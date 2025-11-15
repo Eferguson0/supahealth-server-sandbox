@@ -7,8 +7,7 @@ from app.models.enums import DataSource
 
 
 # Body Composition Schemas
-class BodyCompositionCreate(BaseModel):
-    measurement_date: datetime = Field(..., description="Date and time of measurement")
+class BodyCompositionBase(BaseModel):
     weight: Optional[float] = Field(None, ge=0, description="Weight in kg or lbs")
     body_fat_percentage: Optional[float] = Field(
         None, ge=0, le=100, description="Body fat percentage"
@@ -26,13 +25,19 @@ class BodyCompositionCreate(BaseModel):
         None, description="Measurement method (e.g., DEXA, BIA, Scale)"
     )
     notes: Optional[str] = Field(None, description="Additional notes")
+    class Config:
+        extra = "forbid"
+
+
+class BodyCompositionCreate(BodyCompositionBase):
+    measurement_date: datetime = Field(..., description="Date and time of measurement")
     source: DataSource = Field(
         default=DataSource.MANUAL,
         description="Source of the measurement data (defaults to manual)",
     )
 
 
-class BodyCompositionResponse(BaseModel):
+class BodyCompositionResponse(BodyCompositionBase):
     id: str
     user_id: str
     measurement_date: datetime = Field(
@@ -40,15 +45,6 @@ class BodyCompositionResponse(BaseModel):
         serialization_alias="measurement_date",
         validation_alias=AliasChoices("measurement_date", "date_hour"),
     )
-    weight: Optional[float]
-    body_fat_percentage: Optional[float]
-    muscle_mass_percentage: Optional[float]
-    bone_density: Optional[float]
-    water_percentage: Optional[float]
-    visceral_fat: Optional[float]
-    bmr: Optional[float]
-    measurement_method: Optional[str]
-    notes: Optional[str]
     source: DataSource
     created_at: datetime
     updated_at: Optional[datetime]
@@ -59,13 +55,15 @@ class BodyCompositionResponse(BaseModel):
 
 
 # Response schemas
-class BodyCompositionCreateResponse(BaseModel):
+class BodyCompositionMessageResponse(BaseModel):
     message: str
+
+
+class BodyCompositionCreateResponse(BodyCompositionMessageResponse):
     composition: BodyCompositionResponse
 
 
-class BodyCompositionDeleteResponse(BaseModel):
-    message: str
+class BodyCompositionDeleteResponse(BodyCompositionMessageResponse):
     deleted_count: int
 
 
@@ -82,8 +80,7 @@ class BodyCompositionBulkCreate(BaseModel):
     )
 
 
-class BodyCompositionBulkCreateResponse(BaseModel):
-    message: str
+class BodyCompositionBulkCreateResponse(BodyCompositionMessageResponse):
     created_count: int
     updated_count: int
     total_processed: int

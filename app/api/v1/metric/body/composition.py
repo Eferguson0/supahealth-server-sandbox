@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.auth.user import AuthUser
 from app.schemas.metric.body.composition import (
+    BodyCompositionCreate,
+    BodyCompositionCreateResponse,
     BodyCompositionBulkCreate,
     BodyCompositionBulkCreateResponse,
     BodyCompositionDeleteResponse,
@@ -61,6 +63,39 @@ async def get_body_composition(
             detail=f"Error fetching data: {str(e)}",
         )
 
+
+@router.post("/",
+    response_model=BodyCompositionCreateResponse,
+    summary="Create a single body composition record endpoint",
+    description="Create a single body composition record",
+    responses={
+        201: {"description": "Body composition record created successfully"},
+        401: {"description": "Unauthorized"},
+        403: {"description": "Inactive user"},
+        500: {"description": "Internal server error"},
+    },
+)
+async def create_body_composition_record(
+    composition_data: BodyCompositionCreate,
+    db: Session = Depends(get_db),
+    current_user: AuthUser = Depends(get_current_active_user),
+):
+    """Create a single body composition record"""
+    try:
+        metrics_service = MetricsService(db)
+        record = metrics_service.create_body_composition_record(current_user.id, composition_data)
+        return BodyCompositionCreateResponse(
+            message="Body composition record created successfully",
+            composition=BodyCompositionResponse.model_validate(record),
+        )
+
+    except Exception as e:
+        logger.error(f"Error creating body composition record: {str(e)}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error creating body composition record: {str(e)}",
+        )
 
 @router.post("/bulk",
     response_model=BodyCompositionBulkCreateResponse,

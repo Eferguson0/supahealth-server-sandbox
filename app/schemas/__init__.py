@@ -30,6 +30,17 @@ from .goal.macros import (
     GoalMacrosUpdate,
     GoalMacrosUpdateResponse,
 )
+from .goal.user_goals import (
+    GoalVariantBuildResult,
+    GoalTargetParam,
+    GoalTargetType,
+    GoalVariantBasis,
+    GoalVariantPreset,
+    GoalVariants,
+    UserGoalCreateRequest,
+    UserGoalParams,
+    UserGoalRead,
+)
 from .goal.templates import (
     GoalTemplateBase,
     GoalTemplateDefaults,
@@ -133,6 +144,13 @@ from .nutrition.macros import (
     NutritionMacrosRecordCreate,
     # NutritionMacrosRecordResponse,
 )
+from .profile.user_profile import (
+    UserProfileBase,
+    UserProfileCreate,
+    UserProfileDeleteResponse,
+    UserProfileRead,
+    UserProfileUpdate,
+)
 
 __all__ = [
     # Auth
@@ -157,6 +175,15 @@ __all__ = [
     "GoalMacrosCreateResponse",
     "GoalMacrosUpdateResponse",
     "GoalMacrosDeleteResponse",
+    "GoalTargetType",
+    "GoalVariantBasis",
+    "GoalTargetParam",
+    "GoalVariantPreset",
+    "GoalVariants",
+    "GoalVariantBuildResult",
+    "UserGoalParams",
+    "UserGoalRead",
+    "UserGoalCreateRequest",
     "GoalTemplateTarget",
     "GoalTemplatePaceMode",
     "GoalTemplateSafety",
@@ -235,4 +262,10 @@ __all__ = [
     "DailyAggregation",
     "DailyAggregationResponse",
     "NutritionMacrosDeleteResponse",
+    # Profile
+    "UserProfileBase",
+    "UserProfileCreate",
+    "UserProfileRead",
+    "UserProfileUpdate",
+    "UserProfileDeleteResponse",
 ]
